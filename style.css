@@ -1,0 +1,121 @@
+@charset "UTF-8";
+
+/*
+Theme Name: SSP
+Theme URI: https://wordpress.org/themes/SSP/
+Author: the MBF team
+Version: 1.0 License: GNU General Public License v1
+Text Domain: SSP
+*/
+.count .boxglobal {
+    width: 40px;
+    height: 30px;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #eee3e0;
+    cursor: pointer;
+}
+
+.count input.boxglobal {
+    background-color: transparent;
+    border: 0;
+    text-align: center;
+}
+
+.quantity-blk .globalprice {
+    font-family: Montserrat-Medium, sans-serif;
+}
+
+.edit_address_form {
+    display: none;
+}
+
+@media screen and (max-width: 768px) {
+    .edit_address_form.active .adrs-form-content {
+        opacity: 1;
+        transition: opacity 2s;
+    }
+}
+
+.edit_address_form {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: -100%;
+    z-index: 1;
+    max-width: 800px;
+    width: 100%;
+    padding: 50px 24px;
+    transition: all .5s;
+    background: #f8f2f2;
+    z-index: 99999;
+    overflow: auto;
+}
+
+.edit_address_form.active {
+    left: 0;
+}
+
+.post-ratings img {
+    display: inline-block;
+    margin-right: 8px !important;
+}
+
+.post-ratings img:last-child {
+    margin-right: 0;
+
+}
+
+.select2 {
+    display: none !important;
+}
+
+/* Button */
+.pointer-disab {
+    pointer-events: none;
+    opacity: .5;
+}
+
+/* global error meage */
+.close-button {
+    cursor: pointer;
+}
+
+.woocommerce-notices-wrapper {
+    display: none;
+}
+
+.bg-layer-edit.active {
+    display: block;
+}
+
+.bg-layer-edit {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #242222e0;
+    z-index: 50;
+    display: none;
+    overflow: auto;
+}
+
+/* Last menu hide */
+.last-menu-item-hidden {
+    display: none;
+}
+
+.customised-checkout #billing_country_field {
+    display: none;
+}
+
+
+/* Hide ratings in CusRev All Ratings */
+/* .cr-summaryBox-wrap {
+    display: none !important;
+} */
