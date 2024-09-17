@@ -1,0 +1,105 @@
+// Function to fetch location details based on PIN code
+function fetchLocationDetails(pincode, countryId, stateId, cityId) {
+    // Make an AJAX request to fetch the location details
+    $.ajax({
+        url: `https://maps.googleapis.com/maps/api/geocode/json?address=${pincode}&sensor=true&key=AIzaSyAc62qivSjeF4i_xSWblDeoo5681E4PQFM`,
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            console.log(data);
+            // Check if the API response contains valid data
+            if (data && data.results && data.results.length > 0) {
+                const addressComponents = data.results[0].address_components;
+                let country, state, city;
+
+                // Loop through the address components to find country, state, and city
+                for (let i = 0; i < addressComponents.length; i++) {
+                    const component = addressComponents[i];
+                    const types = component.types;
+                    if (types.includes('country')) {
+                        country = component.long_name;
+                    } else if (types.includes('administrative_area_level_1')) {
+                        state = component.long_name;
+                    } else if (types.includes('locality') || types.includes('administrative_area_level_3') ||  types.includes('administrative_area_level_2')) {
+                        city = component.long_name;
+                    }
+                }
+                $('#continue_addr_checkout').prop('disabled', false);
+                $(`#${countryId}, #${stateId}, #${cityId}`).parents('.floating-blk').addClass('active');
+                const optionElement = $(`#${countryId} option:contains(${country})`);
+                if (optionElement.length > 0) { 
+                    optionElement.prop('selected', true);
+                    $('#continue_addr_checkout').prop('disabled', false);
+                    $(`#${stateId}`).val(state);
+                    $(`#${cityId}`).val(city);
+                } else { 
+                    $(`#${stateId}, #${cityId}`).parents('.floating-blk').removeClass('active');
+                    $(`#${stateId}`).val("");
+                    $(`#${cityId}`).val("");
+                    if (!postcodeErrorDisplayed) {
+                     
+                    $('#continue_addr_checkout').prop('disabled', true);
+                    if(country != "India"){
+                        $('<p class="floating-input-error">The entered pincode appears to be of international origin. Please provide a different one, as this checkout process is for domestic orders.</p>')
+                        .appendTo($("#billing_postcode_field #billing_postcode").parents(".floating-blk"))
+                        .slideDown();
+                    }else{
+                        $('<p class="floating-input-error">The entered pincode appears to be domestic in nature. Please provide a global pincode, as this checkout process is for international orders.</p>')
+                        .appendTo($("#billing_postcode_field #billing_postcode").parents(".floating-blk"))
+                        .slideDown();
+                    }
+                        console.log(`Country '${country}' not found in the options.`);
+                        postcodeErrorDisplayed = true; // Set the flag to true
+                    }
+                }
+                 
+
+            } else {
+                if (!postcodeErrorDisplayed) {
+                    $('#continue_addr_checkout').prop('disabled', true);
+                $('#continue_addr_checkout').prop('disabled', true);
+                   $('<p class="floating-input-error">Please enter a valid postcode.</p>')
+                       .appendTo($("#billing_postcode_field #billing_postcode").parents(".floating-blk"))
+                       .slideDown(); 
+                   postcodeErrorDisplayed = true; // Set the flag to true
+               }
+                console.error('Invalid API response');
+            }
+        },
+        error: function (error) {
+            console.error('Error:', error);
+        }
+    });
+}
+
+
+// Event listener for the PIN code field
+$('#billing_postcode1').on('keyup', function () {
+    const pincode = $(this).val();
+    fetchLocationDetails(pincode, 'billing_country', 'billing_state', 'billing_city');
+});
+
+$('#postcode').on('keyup', function () {
+    const pincode = $(this).val();
+    fetchLocationDetails(pincode, 'country', 'state', 'city');
+});
+
+let postcodeErrorDisplayed = false;
+$('#billing_postcode').on('keyup', function () {
+    const pincode = $(this).val();
+    if (postcodeErrorDisplayed) {
+        $('.floating-input-error').remove();
+        postcodeErrorDisplayed = false;
+    }
+    fetchLocationDetails(pincode, 'country', 'billing_state', 'billing_city');
+});
+$('#billing_postcode').on('keyup', function () {
+    const pincode = $(this).val();
+    if (postcodeErrorDisplayed) {
+        $('.floating-input-error').remove();
+        postcodeErrorDisplayed = false;
+    }
+    fetchLocationDetails(pincode, 'country_add', 'billing_state', 'billing_city');
+});
+
+ 
